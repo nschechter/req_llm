@@ -859,7 +859,10 @@ defmodule ReqLLM.Provider.Defaults do
          "type" => "function",
          "function" => %{"name" => name, "arguments" => args_json}
        }) do
-    case Jason.decode(args_json || "{}") do
+
+    normalized_args = if args_json in [nil, ""], do: "{}", else: args_json
+
+    case Jason.decode(normalized_args) do
       {:ok, args} -> ReqLLM.StreamChunk.tool_call(name, args, %{id: id})
       {:error, _} -> nil
     end
@@ -903,7 +906,9 @@ defmodule ReqLLM.Provider.Defaults do
          "function" => %{"name" => name, "arguments" => args_json}
        })
        when is_binary(name) do
-    case Jason.decode(args_json || "{}") do
+    normalized_args = if args_json in [nil, ""], do: "{}", else: args_json
+
+    case Jason.decode(normalized_args) do
       {:ok, args} -> ReqLLM.StreamChunk.tool_call(name, args, %{id: id, index: index})
       {:error, _} -> ReqLLM.StreamChunk.tool_call(name, %{}, %{id: id, index: index})
     end
@@ -941,7 +946,9 @@ defmodule ReqLLM.Provider.Defaults do
          "function" => %{"name" => name, "arguments" => args_json}
        })
        when is_binary(name) do
-    case Jason.decode(args_json || "{}") do
+    normalized_args = if args_json in [nil, ""], do: "{}", else: args_json
+
+    case Jason.decode(normalized_args) do
       {:ok, args} -> ReqLLM.StreamChunk.tool_call(name, args, %{id: id})
       {:error, _} -> ReqLLM.StreamChunk.tool_call(name, %{}, %{id: id})
     end
